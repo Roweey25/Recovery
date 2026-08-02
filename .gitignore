@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Recovery working files - these are large and machine-specific.
+*.jsonl
+*.img
+*.dd
+*.E01
+*.map
+detail.csv
+recup_dir*/
+sorted/
+carved/
