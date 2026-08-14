@@ -109,13 +109,22 @@ try:
 except Exception as e:
     print(f"   (could not parse: {e})"); raise SystemExit
 for k in ("primaryApiKey", "customApiKeyResponses", "oauthAccount", "hasCompletedOnboarding"):
-    if k in d:
-        v = d[k]
-        if k == "primaryApiKey" and v:
-            v = f"<set, {len(str(v))} chars>"
-        if k == "oauthAccount" and isinstance(v, dict):
-            v = {kk: v.get(kk) for kk in ("emailAddress", "organizationName")}
-        print(f"   {k} = {v}")
+    if k not in d:
+        continue
+    v = d[k]
+    if k == "primaryApiKey":
+        # Never print the key, not even a prefix.
+        v = f"<set, {len(str(v))} chars>" if v else "<empty>"
+    elif k == "customApiKeyResponses":
+        # Values are key fragments Claude Code remembered you approving.
+        # Report only how many, never the fragments themselves.
+        if isinstance(v, dict):
+            v = {sub: f"<{len(lst)} key(s), hidden>" for sub, lst in v.items()}
+        else:
+            v = "<present, hidden>"
+    elif k == "oauthAccount" and isinstance(v, dict):
+        v = {kk: v.get(kk) for kk in ("emailAddress", "organizationName")}
+    print(f"   {k} = {v}")
 PY
   else
     scan_file "$CJ" || note "   (python3 unavailable; grepped only)"
